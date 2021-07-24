@@ -1,0 +1,3 @@
+---
+mariadb_container_name: skill-tracker-db
+mariadb_container_image: docker.io/library/mariadb:10.3
