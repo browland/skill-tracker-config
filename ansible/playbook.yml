@@ -10,7 +10,7 @@
   tasks:
     - name: Install required system packages
       apt: name={{ item }} state=latest update_cache=yes
-      loop: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+      loop: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools', 'nginx']
 
     - name: Add Docker GPG apt Key
       apt_key:
@@ -44,3 +44,22 @@
             - name: skill-tracker
         env:
             MYSQL_ROOT_PASSWORD: "{{ lookup('file', './MARIADB_ROOT_PASSWORD.txt') }}"
+
+    - name: Setup nginx configuration
+      template:
+        src=nginx/nginx.conf
+        dest=/etc/nginx/nginx.conf
+    - name: Setup nginx vhost
+      template:
+        src=nginx/registry.benrowland.net
+        dest=/etc/nginx/sites-available/registry.benrowland.net.conf
+    - name: Delete symlink for default site configuration
+      file:
+        path: "/etc/nginx/sites-enabled/default"
+        state: absent
+
+  handlers:
+    - name: restart nginx
+      service:
+        name=nginx
+        state=restarted

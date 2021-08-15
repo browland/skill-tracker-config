@@ -2,3 +2,4 @@
 terraform.tfstate*
 .terraform
 .terraform.lock.hcl
+ansible/MARIADB_ROOT_PASSWORD.txt
