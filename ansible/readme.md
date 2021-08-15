@@ -1,5 +1,6 @@
 ## Configuration for Skill Tracker instance
 
+Tested on Ubuntu 20.04.1 LTS
 How to run (restricting to only the single host expressed in $DO_HOST rather than all hosts in the inventory in /etc/ansible/hosts).
 You can do a dry run with `ansible-playbook --check` which won't execute any remote commands.  It will just report what would
 be executed.
