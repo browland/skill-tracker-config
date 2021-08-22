@@ -50,14 +50,38 @@
       template:
         src=nginx/nginx.conf
         dest=/etc/nginx/nginx.conf
-    - name: Setup nginx vhost
+    - name: Setup nginx docker registry vhost
       template:
         src=nginx/registry.benrowland.net
         dest=/etc/nginx/sites-available/registry.benrowland.net
+    - name: Setup nginx skill tracker app vhost
+      template:
+        src=nginx/st.benrowland.net
+        dest=/etc/nginx/sites-available/st.benrowland.net
+    - name: Setup nginx vhost for upcoming 443 mapping to tomcat backend (initially default page running on 443 to avoid port 80 getting started up)
+      template:
+        src=nginx/default
+        dest=/etc/nginx/sites-available/default
     - name: Delete symlink for default site configuration
       file:
         path: "/etc/nginx/sites-enabled/default"
         state: absent
+    - name: Create sym link for docker registry vhost
+      file:
+        src: "/etc/nginx/sites-available/registry.benrowland.net"
+        dest: "/etc/nginx/sites-enabled/registry.benrowland.net"
+        state: link
+    - name: Create sym link for skill tracker app vhost
+      file:
+        src: "/etc/nginx/sites-available/st.benrowland.net"
+        dest: "/etc/nginx/sites-enabled/st.benrowland.net"
+        state: link
+
+    - name: Setup firewall with ufw
+      ufw:
+        rule: allow
+        port: 22,80,443,5000
+        proto: tcp
 
   handlers:
     - name: restart nginx
